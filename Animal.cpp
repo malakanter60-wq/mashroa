@@ -23,6 +23,16 @@ void Animal::draw() const
 Chick::Chick(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Animal(r_pGame, r_point, r_width, r_height, img_path)
 {}
 
+ProductType Chick::getProductType() const
+{
+    return EGG;
+}
+
+int Chick::getProductValue() const
+{
+    return 5;
+}
+
 void Chick::moveStep()
 {
 	//TO DO: add code for cleanup and game exit here
@@ -61,6 +71,16 @@ void Chick::moveStep()
 
 Cow::Cow(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Animal(r_pGame, r_point, r_width, r_height, img_path)
 {}
+
+ProductType Cow::getProductType() const
+{
+    return MILK;
+}
+
+int Cow::getProductValue() const
+{
+    return 10;
+}
 
 
 	//TO DO: add code for cleanup and game exit here
