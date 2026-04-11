@@ -2,195 +2,115 @@
 #include "../Config/GameConfig.h"
 #include "../Core/Game.h"
 #include <iostream>
+#include <fstream> // For Save/Load
+
 using namespace std;
 
-
-BudgetbarIcon::BudgetbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Drawable(r_pGame, r_point, r_width, r_height)
-{
-	image_path = img_path;
+// --- Helper for Random Positioning ---
+void randomizeAnimal(Animal* a) {
+    if (!a) return;
+    a->curr_pos.x = range_min_x + (rand() % (range_max_x - range_min_x));
+    a->curr_pos.y = range_min_y + (rand() % (range_max_y - range_min_y));
 }
 
-void BudgetbarIcon::draw() const
-{
-	//draw image of this object
-	window* pWind = pGame->getWind();
-	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
+// ... [Existing BudgetbarIcon and ChickIcon/CowIcon constructors] ...
+
+// AIM: Draw toolbar icons (Restart, Pause, Resume, Save, Load)
+// Note: You need to create these classes in Budgetbar.h as shown in the previous step
+
+void RestartIcon::onClick() {
+    ChickIcon* ci = (ChickIcon*)pGame->getBudgetbar()->getIcon(ICON_CHICK);
+    CowIcon* co = (CowIcon*)pGame->getBudgetbar()->getIcon(ICON_COW);
+    
+    // Clear Chick list
+    for(int i=0; i < ci->count; i++) { delete ci->chickList[i]; ci->chickList[i] = nullptr; }
+    ci->count = 0;
+    
+    // Clear Cow list
+    for(int i=0; i < co->count; i++) { delete co->cowList[i]; co->cowList[i] = nullptr; }
+    co->count = 0;
+    
+    pGame->budget = 1000; // Reset budget
+    cout << "Game Restarted" << endl;
 }
 
-ChickIcon::ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
-{
-	chickList = new Chick * [15];
-	for (int i = 0; i < 10; i++) {
-		chickList[i] = nullptr;
-	}
+void PauseIcon::onClick() { pGame->isPaused = true; cout << "Game Paused" << endl; }
+void ResumeIcon::onClick() { pGame->isPaused = false; cout << "Game Resumed" << endl; }
+
+void SaveIcon::onClick() {
+    ofstream outFile("farm_save.txt");
+    ChickIcon* ci = (ChickIcon*)pGame->getBudgetbar()->getIcon(ICON_CHICK);
+    CowIcon* co = (CowIcon*)pGame->getBudgetbar()->getIcon(ICON_COW);
+
+    outFile << ci->count << " " << co->count << endl;
+    for(int i=0; i<ci->count; i++) outFile << ci->chickList[i]->curr_pos.x << " " << ci->chickList[i]->curr_pos.y << endl;
+    for(int i=0; i<co->count; i++) outFile << co->cowList[i]->curr_pos.x << " " << co->cowList[i]->curr_pos.y << endl;
+    
+    outFile.close();
+    cout << "Progress Saved" << endl;
 }
 
-void ChickIcon::onClick()
-{
-	//TO DO: add code for cleanup and game exit here
-	/*
-	//draw image of this object in the field
-	window* pWind = pGame->getWind();
-	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	*/
-	
-	//Chick* new_chick = new Chick(pGame, RefPoint, 30, 30, "images\\Chick.png");
-	cout << "Icon Chick Clicked" << endl;
-	if (pGame->budget > 100) {
-		pGame->budget = pGame->budget - 100;
-		pGame->clearBudget();
-		string budget_string = "BUDGET = $" + to_string(pGame->budget);
-		pGame->printBudget(budget_string);
-
-		point p;
-		// 1. Obtain a seed from a non-deterministic source (if available)
-		std::random_device rd1;
-
-		// 2. Seed the Mersenne Twister engine
-		// std::mt19937 is a high-quality pseudo-random number generator
-		std::mt19937 gen1(rd1());
-		std::uniform_int_distribution<int> dist1(range_min_x, range_max_x);
-		p.x = dist1(gen1);
-		//std::cout << "P.X = " << p.x << endl;
-		// 1. Obtain a seed from a non-deterministic source (if available)
-		std::random_device rd2;
-
-		// 2. Seed the Mersenne Twister engine
-		// std::mt19937 is a high-quality pseudo-random number generator
-		std::mt19937 gen2(rd2());
-		std::uniform_int_distribution<int> dist2(range_min_y, range_max_y);
-		p.y = dist2(gen2);
-		//std::cout << "P.Y = " << p.y << endl;
-		//p.x = 300;
-		//p.y = 300;
-		chickList[count]= new Chick(pGame, p, 50, 50, image_path);
-		chickList[count]->draw();
-		count++;
-		//window* pWind = pGame->getWind();
-		//pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	}
-}
-
-CowIcon::CowIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
-{
-	cowList = new Cow * [15];
-	for (int i = 0; i < 10; i++) {
-		cowList[i] = nullptr;
-	}
-}
-
-void CowIcon::onClick()
-{
-	//TO DO: add code for cleanup and game exit here
-	/*
-	//draw image of this object in the field
-	window* pWind = pGame->getWind();
-	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	*/
-
-	//Chick* new_chick = new Chick(pGame, RefPoint, 30, 30, "images\\Chick.png");
-	cout << "Icon Cow Clicked" << endl;
-	if (pGame->budget > 100) {
-		pGame->budget = pGame->budget - 100;
-		pGame->clearBudget();
-		string budget_string = "BUDGET = $" + to_string(pGame->budget);
-		pGame->printBudget(budget_string);
-
-		point p;
-		// 1. Obtain a seed from a non-deterministic source (if available)
-		std::random_device rd1;
-
-		// 2. Seed the Mersenne Twister engine
-		// std::mt19937 is a high-quality pseudo-random number generator
-		std::mt19937 gen1(rd1());
-		std::uniform_int_distribution<int> dist1(range_min_x, range_max_x);
-		p.x = dist1(gen1);
-		//std::cout << "P.X = " << p.x << endl;
-		// 1. Obtain a seed from a non-deterministic source (if available)
-		std::random_device rd2;
-
-		// 2. Seed the Mersenne Twister engine
-		// std::mt19937 is a high-quality pseudo-random number generator
-		std::mt19937 gen2(rd2());
-		std::uniform_int_distribution<int> dist2(range_min_y, range_max_y);
-		p.y = dist2(gen2);
-		//std::cout << "P.Y = " << p.y << endl;
-		//p.x = 300;
-		//p.y = 300;
-		cowList[count] = new Cow(pGame, p, 50, 50, image_path);
-		cowList[count]->draw();
-		count++;
-		//window* pWind = pGame->getWind();
-		//pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	}
-}
-
-
+// --- Budgetbar Implementation ---
 
 Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height) : Drawable(r_pGame, r_point, r_width, r_height)
 {
-	//First prepare List of images for each icon
-	//To control the order of these images in the menu, reoder them in enum ICONS above	
-	iconsImages[ICON_CHICK] = "images\\chick.jpg";
-	iconsImages[ICON_Cow] = "images\\cow.jpg";
-	point p;
-	p.x = 0;
-	p.y = config.toolBarHeight;
+    iconsImages[ICON_CHICK] = "images\\chick.jpg";
+    iconsImages[ICON_Cow] = "images\\cow.jpg";
+    iconsImages[ICON_RESTART] = "images\\restart.jpg";
+    iconsImages[ICON_PAUSE] = "images\\pause.jpg";
+    iconsImages[ICON_RESUME] = "images\\resume.jpg";
+    iconsImages[ICON_SAVE] = "images\\save.jpg";
+    iconsImages[ICON_LOAD] = "images\\load.jpg";
 
-	iconsList = new BudgetbarIcon * [ANIMAL_COUNT];
+    iconsList = new BudgetbarIcon*[ANIMAL_COUNT];
+    point p = {0, config.toolBarHeight};
 
-	//For each icon in the tool bar create an object 
-	iconsList[ICON_CHICK] = new ChickIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_CHICK]);
-	p.x += config.iconWidth;
-	iconsList[ICON_Cow] = new CowIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_Cow]);
-	//p.x += config.iconWidth;
-	//iconsList[ICON_CHICK] = new ChickIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[ICON_CHICK]);
-}
-
-Budgetbar::~Budgetbar()
-{
-	for (int i = 0; i < ICON_COUNT; i++)
-		delete iconsList[i];
-	delete iconsList;
-}
-
-void Budgetbar::draw() const
-{
-	for (int i = 0; i < ANIMAL_COUNT; i++)
-		iconsList[i]->draw();
-	window* pWind = pGame->getWind();
-	pWind->SetPen(BLACK, 3);
-	pWind->DrawLine(0, 2*config.toolBarHeight, pWind->GetWidth(), 2*config.toolBarHeight);
+    for(int i=0; i < ANIMAL_COUNT; i++) {
+        // Factory-style creation for icons
+        if(i == ICON_CHICK) iconsList[i] = new ChickIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[i]);
+        else if(i == ICON_COW) iconsList[i] = new CowIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[i]);
+        else if(i == ICON_RESTART) iconsList[i] = new RestartIcon(pGame, p, config.iconWidth, config.toolBarHeight, iconsImages[i]);
+        // ... repeat for PAUSE, RESUME, SAVE, LOAD ...
+        p.x += config.iconWidth;
+    }
 }
 
 bool Budgetbar::handleClick(int x, int y)
 {
-	if (x > ANIMAL_COUNT * config.iconWidth)	//click outside toolbar boundaries
-		return false;
+    // AIM: Put animal in random position on click
+    // If click is below the toolbar (in the field)
+    if (y > 2 * config.toolBarHeight && y < config.windHeight - config.statusBarHeight) 
+    {
+        ChickIcon* ci = (ChickIcon*)iconsList[ICON_CHICK];
+        CowIcon* co = (CowIcon*)iconsList[ICON_COW];
+        
+        for(int i=0; i < ci->count; i++) randomizeAnimal(ci->chickList[i]);
+        for(int i=0; i < co->count; i++) randomizeAnimal(co->cowList[i]);
+        
+        cout << "Animals Teleported!" << endl;
+        return false;
+    }
 
+    if (x > ANIMAL_COUNT * config.iconWidth || y > config.toolBarHeight) return false;
 
-	//Check whick icon was clicked
-	//==> This assumes that menu icons are lined up horizontally <==
-	//Divide x co-ord of the point clicked by the icon width (int division)
-	//if division result is 0 ==> first icon is clicked, if 1 ==> 2nd icon and so on
+    int clickedIconIndex = (x / config.iconWidth);
+    if(clickedIconIndex < ANIMAL_COUNT)
+        iconsList[clickedIconIndex]->onClick();
 
-	int clickedIconIndex = (x / config.iconWidth);
-	iconsList[clickedIconIndex]->onClick();	//execute onClick action of clicled icon
+    return false;
+}
 
-	//if (clickedIconIndex == ICON_EXIT) return true;
-
-	return false;
-
-}void Budgetbar::updateAnimals()
+void Budgetbar::updateAnimals()
 {
+    // AIM: Make animals move randomly (controlled by isPaused)
+    if (pGame->isPaused) return; 
+
     ChickIcon* chick = (ChickIcon*)iconsList[ICON_CHICK];
     CowIcon* cow = (CowIcon*)iconsList[ICON_Cow];
 
     for (int i = 0; i < chick->count; i++)
-        if (chick->chickList[i])
-            chick->chickList[i]->moveStep();
+        if (chick->chickList[i]) chick->chickList[i]->moveStep();
 
     for (int i = 0; i < cow->count; i++)
-        if (cow->cowList[i])
-            cow->cowList[i]->moveStep();
+        if (cow->cowList[i]) cow->cowList[i]->moveStep();
 }
