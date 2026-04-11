@@ -10,7 +10,8 @@ enum ProductType
 };
 
 class Animal : public Drawable
-{
+{enum AnimalType { CHICK, COW };
+AnimalType type;
 protected: // Changed to protected so Chick and Cow can access it easily
     string image_path;
 public:
