@@ -53,4 +53,3 @@ void Game::letsgo()
 
     } while (!isExit);
 }
-// ... [Keep the rest of your functions like drawFoodArea and printMessage] ...
