@@ -181,4 +181,16 @@ bool Budgetbar::handleClick(int x, int y)
 
 	return false;
 
+}void Budgetbar::updateAnimals()
+{
+    ChickIcon* chick = (ChickIcon*)iconsList[ICON_CHICK];
+    CowIcon* cow = (CowIcon*)iconsList[ICON_Cow];
+
+    for (int i = 0; i < chick->count; i++)
+        if (chick->chickList[i])
+            chick->chickList[i]->moveStep();
+
+    for (int i = 0; i < cow->count; i++)
+        if (cow->cowList[i])
+            cow->cowList[i]->moveStep();
 }
