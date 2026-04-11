@@ -188,7 +188,7 @@ void Game::letsgo()
             break;
         }
 
-        getMouseClick(x, y);
+       
 getMouseClick(x, y);
 
 // check if click is inside play area (NOT toolbar or budgetbar)
@@ -216,4 +216,8 @@ if (y >= 2 * config.toolBarHeight &&
         }
 
     } while (!isExit);
+}
+void Game::AddAnimal(Animal* a)
+{
+    animals.push_back(a);
 }
