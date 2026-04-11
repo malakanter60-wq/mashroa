@@ -37,14 +37,14 @@ public:
 	virtual void moveStep();
 };
 
-class Egg : public Animal
+class Egg : public Drawable
 {
 public:
 	Egg(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
 	virtual void moveStep();
 };
 
-class Milk : public Animal
+class Milk : public Drwable
 {
 public:
 	Milk(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
