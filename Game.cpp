@@ -173,7 +173,7 @@ void Game::letsgo()
 		string timeStr = "Time Left: " + to_string(remainingTime);
 		printMessage(timeStr);
 
-		Sleep(250);
+		Sleep(1000);
 		updateTimer();
 
 		if (remainingTime <= 0)
