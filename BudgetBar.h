@@ -68,6 +68,6 @@ public:
 	~Budgetbar();
 	void draw() const override;
 	bool handleClick(int x, int y);	//handles clicks on toolbar icons, returns true if exit is clicked
-
+void updateAnimals();
 };
 
