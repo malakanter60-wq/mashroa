@@ -6,31 +6,41 @@
 class Game
 {
 private:
-	window* pWind;	//Pointer to the CMU graphics window
-	Toolbar* gameToolbar;
-	Budgetbar* gameBudgetbar;
+    window* pWind;
+    Toolbar* gameToolbar;
+    Budgetbar* gameBudgetbar;
+
+    int remainingTime;
+    int currentLevel;
 
 public:
-	int budget = 2000;
-	Game();
-	~Game();
+    int budget = 30000;
 
-	clicktype getMouseClick(int& x, int& y) const; //Get coordinate where user clicks and returns click type (left/right)
-	string getSrting() const;	 //Returns a string entered by the user
+    Game();
+    ~Game();
 
+    clicktype getMouseClick(int& x, int& y) const;
+    string getSrting() const;
 
-	window* CreateWind(int, int, int, int) const; //creates the game window
-	void createToolbar();
-	void createBudgetbar();
-	void clearBudget() const;
-	void printBudget(string msg) const;
-	void clearStatusBar() const;	//Clears the status bar
+    window* CreateWind(int, int, int, int) const;
 
+    void createToolbar();
+    void createBudgetbar();
 
-	void printMessage(string msg) const;	//Print a message on Status bar
+    void clearBudget() const;
+    void printBudget(string msg) const;
 
-	void go() const;
+    void clearStatusBar() const;
+    void printMessage(string msg) const;
 
-	window* getWind() const;		//returns a pointer to the graphics window
+    void go();   
+
+    window* getWind() const;
+
+    // elTIMER welLEVEL
+    void updateTimer();
+    void initLevel();
+
+    // elFOODAREA
+    void drawFoodArea();
 };
-
