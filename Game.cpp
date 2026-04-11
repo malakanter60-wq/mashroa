@@ -1,4 +1,4 @@
-s#include "Game.h"
+#include "Game.h"
 #include "../Config/GameConfig.h"
 #include <windows.h>
 
@@ -104,10 +104,18 @@ void Game::clearStatusBar() const
 void Game::printMessage(string msg) const
 {
 	clearStatusBar();
+	color textColor = LIGHTGRAY;
+	if (msg.find("Time Left") != string::npos && remainingTime <= 20)
+		textColor = RED;
 
-	pWind->SetPen(config.penColor, 50);
-	pWind->SetFont(24, BOLD, BY_NAME, "Arial");
-	pWind->DrawString(10, config.windHeight - (int)(0.85 * config.statusBarHeight), msg);
+	pWind->SetPen(textColor, 50);
+	pWind->SetFont(28, BOLD, BY_NAME, "Arial");
+
+	pWind->DrawString(
+		10,
+		config.windHeight - (int)(0.85 * config.statusBarHeight),
+		msg
+	);
 }
 
 window* Game::getWind() const
@@ -139,12 +147,12 @@ void Game::drawFoodArea()
 {
 	window* pWind = getWind();
 
-	pWind->SetPen(GREEN, 2);
-	pWind->SetBrush(LIGHTGREEN);
+	int yStart = 2 * config.toolBarHeight;
 
-	pWind->DrawRectangle(
+	pWind->DrawImage(
+		"images\\grass.jpg",
 		0,
-		2 * config.toolBarHeight,
+		yStart,
 		config.windWidth,
 		config.windHeight - config.statusBarHeight
 	);
@@ -165,9 +173,9 @@ void Game::letsgo()
 		string timeStr = "Time Left: " + to_string(remainingTime);
 		printMessage(timeStr);
 
-		Sleep(1000);
+		Sleep(250);
 		updateTimer();
-gameBudgetbar->updateAnimals();
+
 		if (remainingTime <= 0)
 			break;
 
