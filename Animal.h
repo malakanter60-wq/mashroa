@@ -1,11 +1,21 @@
 #pragma once
 #include "../Core/Drawable.h"
 
+enum ProductType
+{
+    NONE,
+    EGG,
+    MILK
+};
+
 class Animal :public Drawable
 {
 private:
 	string image_path;
 public:
+
+    virtual ProductType getProductType() const = 0;
+    virtual int getProductValue() const = 0;
 	point curr_pos;
 	point curr_vel;
 	Animal(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
