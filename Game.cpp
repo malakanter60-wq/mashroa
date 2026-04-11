@@ -167,7 +167,7 @@ void Game::letsgo()
 
 		Sleep(1000);
 		updateTimer();
-
+gameBudgetbar->updateAnimals();
 		if (remainingTime <= 0)
 			break;
 
