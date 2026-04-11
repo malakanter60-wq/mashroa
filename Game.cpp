@@ -158,6 +158,21 @@ void Game::drawFoodArea()
 	);
 }
 
+void Game::drawProducts()
+{
+    window* pWind = getWind();
+
+    //  Egg
+    pWind->SetBrush(WHITE);
+    pWind->SetPen(BLACK);
+    pWind->DrawCircle(300, 300, 10);
+
+    //  Milk
+    pWind->SetBrush(LIGHTBLUE);
+    pWind->SetPen(BLACK);
+    pWind->DrawRectangle(400, 290, 430, 320);
+
+
 void Game::letsgo()
 {
 	int x, y;
@@ -172,7 +187,7 @@ void Game::letsgo()
 
 		string timeStr = "Time Left: " + to_string(remainingTime);
 		printMessage(timeStr);
-
+		drawProducts();
 		Sleep(1000);
 		updateTimer();
 
