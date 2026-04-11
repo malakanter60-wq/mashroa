@@ -2,72 +2,95 @@
 #include "../Core/Drawable.h"
 #include "../Entities/Animal.h"
 #include "../Config/GameConfig.h"
-#include <random>
-#include <limits>
+#include <fstream> // Required for Save/Load
+#include <vector>  // Easier management of animals
 
-//Ranges for generating a random location for the animals
+// Ranges for generating a random location
 const int range_min_x = 50;
 const int range_max_x = config.windWidth - 50;
 const int range_min_y = (config.toolBarHeight * 2) + 50;
 const int range_max_y = config.windHeight - config.statusBarHeight - 50;
 
-//Base class for all toolbar icons 
-class BudgetbarIcon :public Drawable
-{
-private:
-	//string image_path;
-public:
-	string image_path;
-	BudgetbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
-	virtual void draw() const override;
-	virtual void onClick() = 0;   //The action that should be taken when this icon is clicked
-};
-
-class ChickIcon : public BudgetbarIcon
+class BudgetbarIcon : public Drawable
 {
 public:
-	Chick** chickList; //an array of Chick pointers
-	int count = 0;
-	ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
-	virtual void onClick();
+    string image_path;
+    BudgetbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void draw() const override;
+    virtual void onClick() = 0; 
 };
 
-class CowIcon : public BudgetbarIcon
-{
+// --- Animal Creation Icons ---
+class ChickIcon : public BudgetbarIcon {
 public:
-	Cow** cowList; //an array of Chick pointers
-	int count = 0;
-	CowIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
-	virtual void onClick();
+    ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override;
 };
 
-// TO DO: The rest of icons in the toolbar
+class CowIcon : public BudgetbarIcon {
+public:
+    CowIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override;
+};
 
-enum ANIMAL_ICONS //The icons of the toolbar (you should add more icons)
+// --- Aim: Toolbar Icons (Restart, Pause, Resume, Save, Load) ---
+
+class RestartIcon : public BudgetbarIcon {
+public:
+    RestartIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override; // Should clear all animals
+};
+
+class PauseIcon : public BudgetbarIcon {
+public:
+    PauseIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override; // Should set isPaused = true
+};
+
+class ResumeIcon : public BudgetbarIcon {
+public:
+    ResumeIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override; // Should set isPaused = false
+};
+
+class SaveIcon : public BudgetbarIcon {
+public:
+    SaveIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override; // Logic to write to file
+};
+
+class LoadIcon : public BudgetbarIcon {
+public:
+    LoadIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
+    virtual void onClick() override; // Logic to read from file
+};
+
+enum ANIMAL_ICONS 
 {
-	//Note: Icons are ordered here as they appear in menu
-	//If you want to change the menu icons order, change the order here
-	ICON_CHICK,
-	ICON_Cow,
-
-	//TODO: Add more icons names here
-
-	//Cow icon
-
-	ANIMAL_COUNT		//no. of menu icons ==> This should be the last line in this enum
+    ICON_CHICK,
+    ICON_COW,
+    ICON_RESTART, // Added
+    ICON_PAUSE,   // Added
+    ICON_RESUME,  // Added
+    ICON_SAVE,    // Added
+    ICON_LOAD,    // Added
+    ANIMAL_COUNT 
 };
 
 class Budgetbar : public Drawable
 {
 private:
-	BudgetbarIcon** iconsList; //an array of toolbarIcon pointers
-	string iconsImages[ANIMAL_COUNT];
+    BudgetbarIcon** iconsList; 
+    string iconsImages[ANIMAL_COUNT];
 
 public:
-	Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height);
-	~Budgetbar();
-	void draw() const override;
-	bool handleClick(int x, int y);	//handles clicks on toolbar icons, returns true if exit is clicked
-void updateAnimals();
+    Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height);
+    ~Budgetbar();
+    void draw() const override;
+    
+    // Aim: Put animal in random position on click (handled here if clicking outside icons)
+    bool handleClick(int x, int y); 
+    
+    // Aim: Make animals move randomly (called every frame in game loop)
+    void updateAnimals(); 
 };
-
