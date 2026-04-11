@@ -43,4 +43,5 @@ public:
 
     // elFOODAREA
     void drawFoodArea();
+    void drawProducts();
 };
