@@ -1,7 +1,11 @@
 #pragma once
 #include "../CMUgraphicsLib/CMUgraphics.h"
-#include "../UI/Toolbar.h"
-#include "../UI/BudgetBar.h"
+#include <string>
+
+class Toolbar;
+class Budgetbar;
+
+using namespace std;
 
 class Game
 {
@@ -10,11 +14,12 @@ private:
     Toolbar* gameToolbar;
     Budgetbar* gameBudgetbar;
 
-    int remainingTime;
     int currentLevel;
+    int remainingTime;
 
 public:
-    int budget = 30000;
+    int budget = 1000;
+    bool isPaused = false; // AIM: Required for Pause/Resume functionality
 
     Game();
     ~Game();
@@ -22,25 +27,24 @@ public:
     clicktype getMouseClick(int& x, int& y) const;
     string getSrting() const;
 
-    window* CreateWind(int, int, int, int) const;
+    window* CreateWind(int w, int h, int x, int y) const;
+    window* getWind() const;
+    
+    // AIM: Getter so icons can access animal lists for Save/Load/Restart
+    Budgetbar* getBudgetbar() const { return gameBudgetbar; }
 
     void createToolbar();
     void createBudgetbar();
 
-    void clearBudget() const;
-    void printBudget(string msg) const;
-
     void clearStatusBar() const;
     void printMessage(string msg) const;
 
-    void letsgo();   
+    void clearBudget() const;
+    void printBudget(string msg) const;
 
-    window* getWind() const;
-
-    // elTIMER welLEVEL
-    void updateTimer();
     void initLevel();
-
-    // elFOODAREA
+    void updateTimer();
     void drawFoodArea();
+
+    void letsgo();
 };
