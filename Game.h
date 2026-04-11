@@ -1,6 +1,8 @@
 #include "../CMUgraphicsLib/CMUgraphics.h"
 #include "../UI/Toolbar.h"
 #include "../UI/BudgetBar.h"
+#include "Animal.h"
+#include <vector>
 
 class Game
 {
@@ -8,6 +10,7 @@ private:
     window* pWind;
     Toolbar* gameToolbar;
     Budgetbar* gameBudgetbar;
+vector<Animal*> animals;
 
     // Timer & Level
     int remainingTime;
@@ -21,7 +24,7 @@ private:
 
 public:
     int budget = 30000;
-
+void AddAnimal(Animal* a);
     Game();
     ~Game();
 
