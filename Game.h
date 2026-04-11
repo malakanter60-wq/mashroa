@@ -1,37 +1,52 @@
-#include "Game.h"
-#include "../Config/GameConfig.h"
-#include <windows.h>
-#include "Animal.h"
+#include "../CMUgraphicsLib/CMUgraphics.h"
+#include "../UI/Toolbar.h"
+#include "../UI/BudgetBar.h"
 
-Game::Game()
+class Game
 {
-    srand(time(NULL));
-    pWind = CreateWind(config.windWidth, config.windHeight, config.wx, config.wy);
-    createToolbar();
-    createBudgetbar();
-    currentLevel = 1;
-    initLevel();
-    drawFoodArea();
-    clearStatusBar();
-    gamePaused = false;
-}
+private:
+    window* pWind;
+    Toolbar* gameToolbar;
+    Budgetbar* gameBudgetbar;
 
-Game::~Game()
-{
-    for (Animal* a : animals) delete a;
-}
+    // Timer & Level
+    int remainingTime;
+    int currentLevel;
+    int goal = 10;
 
-clicktype Game::getMouseClick(int& x, int& y) const
-{
-    return pWind->WaitMouseClick(x, y);
-}
+    // Game Stats
+    int animalscount = 0;
+    int Animalsbuying = 0;
+    int waterbuying = 0;
 
-std::string Game::getSrting() const
-{
-    std::string Label;
-    char Key;
-    keytype ktype;
-    pWind->FlushKeyQueue();
-    while (1)
-    {
-        ktype
+public:
+    int budget = 30000;
+
+    Game();
+    ~Game();
+
+    clicktype getMouseClick(int& x, int& y) const;
+    string getSrting() const;
+
+    window* CreateWind(int, int, int, int) const;
+
+    void createToolbar();
+    void createBudgetbar();
+
+    void clearBudget() const;
+    void printBudget(string msg) const;
+
+    void clearStatusBar() const;
+    void printMessage() const;
+
+    void letsgo();
+
+    window* getWind() const;
+
+    // elTimer & Level
+    void updateTimer();
+    void initLevel();
+
+    // elFood Area
+    void drawFoodArea();
+};
