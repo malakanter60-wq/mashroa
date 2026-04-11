@@ -1,55 +1,98 @@
-void Game::letsgo()
+#include "Game.h"
+#include "../Config/GameConfig.h"
+#include <windows.h>
+
+Game::Game()
 {
-    int x, y;
-    bool isExit = false;
+	pWind = CreateWind(config.windWidth, config.windHeight, config.wx, config.wy);
 
-    pWind->ChangeTitle("- - - - - - - - - - Farm Frenzy (CIE101-project) - - - - - - - - - -");
+	createToolbar();
+	createBudgetbar();
 
-    int frameCounter = 0;
+	currentLevel = 1;
+	initLevel();
+	
+	budget = 1000;    // Initial money
+	isPaused = false; // Start in moving state
 
-    do
-    {
-        // --- 1. CLEAR AND DRAW BACKGROUND ---
-        // This is CRITICAL. We must redraw the grass every frame 
-        // to "erase" the animals from their previous positions.
-        drawFoodArea(); 
-
-        // --- 2. UPDATE UI ---
-        string budget_string = "BUDGET = $" + to_string(budget);
-        printBudget(budget_string);
-
-        string timeStr = "Time Left: " + to_string(remainingTime);
-        printMessage(timeStr);
-
-        // --- 3. MOVE AND DRAW ANIMALS ---
-        // This updates x,y AND calls draw() for each animal
-        gameBudgetbar->updateAnimals();
-
-        // --- 4. TIMER LOGIC ---
-        frameCounter += 10; 
-        if (frameCounter >= 1000) {
-            updateTimer();
-            frameCounter = 0;
-        }
-
-        if (remainingTime <= 0) break;
-
-        // --- 5. INPUT HANDLING ---
-        if (pWind->GetMouseClick(x, y))
-        {
-            if (y >= 0 && y < config.toolBarHeight)
-            {
-                isExit = gameToolbar->handleClick(x, y);
-            }
-            else if (y >= config.toolBarHeight)
-            {
-                isExit = gameBudgetbar->handleClick(x, y);
-            }
-        }
-
-        // --- 6. RENDER SYNC ---
-        // We use a small Sleep for smooth animation (roughly 100 FPS)
-        Sleep(10); 
-
-    } while (!isExit);
+	clearStatusBar();
 }
+
+Game::~Game()
+{
+	// Cleanup pointers if necessary
+}
+
+clicktype Game::getMouseClick(int& x, int& y) const
+{
+	return pWind->WaitMouseClick(x, y);
+}
+
+string Game::getSrting() const
+{
+	string Label;
+	char Key;
+	keytype ktype;
+	pWind->FlushKeyQueue();
+	while (1)
+	{
+		ktype = pWind->WaitKeyPress(Key);
+		if (ktype == ESCAPE)
+			return "";
+		if (Key == 13)
+			return Label;
+		if (Key == 8)
+			if (Label.size() > 0)
+				Label.resize(Label.size() - 1);
+			else
+				Key = '\0';
+		else
+			Label += Key;
+		printMessage(Label);
+	}
+}
+
+window* Game::CreateWind(int w, int h, int x, int y) const
+{
+	window* pW = new window(w, h, x, y);
+	pW->SetBrush(config.bkGrndColor);
+	pW->SetPen(config.bkGrndColor, 1);
+	pW->DrawRectangle(0, 0, w, h);
+	return pW;
+}
+
+void Game::createToolbar()
+{
+	point toolbarUpperleft;
+	toolbarUpperleft.x = 0;
+	toolbarUpperleft.y = 0;
+
+	gameToolbar = new Toolbar(this, toolbarUpperleft, 0, config.toolBarHeight);
+}
+
+void Game::createBudgetbar()
+{
+	point budgetbarUpperleft;
+	budgetbarUpperleft.x = 0;
+	budgetbarUpperleft.y = config.toolBarHeight;
+
+	gameBudgetbar = new Budgetbar(this, budgetbarUpperleft, 0, config.toolBarHeight);
+}
+
+void Game::clearBudget() const
+{
+	pWind->SetPen(config.bkGrndColor, 1);
+	pWind->SetBrush(config.bkGrndColor);
+	pWind->DrawRectangle(config.windWidth - 500, config.toolBarHeight, config.windWidth, 2 * config.toolBarHeight);
+}
+
+void Game::printBudget(string msg) const
+{
+	clearBudget();
+	pWind->SetPen(config.penColor, 50);
+	pWind->SetFont(24, BOLD, BY_NAME, "Arial");
+	pWind->DrawString(config.windWidth - 200, config.toolBarHeight + 10, msg);
+}
+
+void Game::clearStatusBar() const
+{
