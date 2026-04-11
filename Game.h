@@ -1,6 +1,3 @@
-
-
-Copy code
 #pragma once
 #include "../CMUgraphicsLib/CMUgraphics.h"
 #include "../UI/Toolbar.h"
