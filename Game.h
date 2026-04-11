@@ -33,7 +33,7 @@ public:
     void clearStatusBar() const;
     void printMessage(string msg) const;
 
-    void go();   
+    void letsgo();   
 
     window* getWind() const;
 
