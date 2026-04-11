@@ -19,6 +19,11 @@ void Animal::draw() const
 {
     window* pWind = pGame->getWind();
     pWind->DrawImage(image_path, curr_pos.x, curr_pos.y, width, height);
+    if (type == CHICK)
+    pOut->DrawImage("chick.png", x, y);
+
+else if (type == COW)
+    pOut->DrawImage("cow.png", x, y);
 }
 
 // --- Chick Implementation ---
