@@ -1,59 +1,37 @@
-#pragma once
-#include "../CMUgraphicsLib/CMUgraphics.h"
-#include "../UI/Toolbar.h"
-#include "../UI/BudgetBar.h"
+#include "Game.h"
+#include "../Config/GameConfig.h"
+#include <windows.h>
+#include "Animal.h"
 
-// ADDED FOR 5 POINTS:
-#include <vector>
-#include <string>
-#include <fstream>
-
-class Game
+Game::Game()
 {
-private:
-    window* pWind;
-    Toolbar* gameToolbar;
-    Budgetbar* gameBudgetbar;
+    srand(time(NULL));
+    pWind = CreateWind(config.windWidth, config.windHeight, config.wx, config.wy);
+    createToolbar();
+    createBudgetbar();
+    currentLevel = 1;
+    initLevel();
+    drawFoodArea();
+    clearStatusBar();
+    gamePaused = false;
+}
 
-    int remainingTime;
-    int currentLevel;
-    
-    // ADDED FOR 5 POINTS:
-    std::vector<Animal> animals;
-    bool gamePaused;
+Game::~Game()
+{
+    for (Animal* a : animals) delete a;
+}
 
-public:
-    int budget = 30000;
+clicktype Game::getMouseClick(int& x, int& y) const
+{
+    return pWind->WaitMouseClick(x, y);
+}
 
-    Game();
-    ~Game();
-
-    clicktype getMouseClick(int& x, int& y) const;
-    string getSrting() const;
-
-    window* CreateWind(int, int, int, int) const;
-
-    void createToolbar();
-    void createBudgetbar();
-
-    void clearBudget() const;
-    void printBudget(string msg) const;
-
-    void clearStatusBar() const;
-    void printMessage(string msg) const;
-
-    void letsgo();   
-    window* getWind() const;
-
-    // elTIMER welLEVEL
-    void updateTimer();
-    void initLevel();
-
-    // elFOODAREA
-    void drawFoodArea();
-    void drawProducts();
-    
-    // ADDED FOR 5 POINTS:
-    void SaveAnimals();
-    void LoadAnimals();
-};
+std::string Game::getSrting() const
+{
+    std::string Label;
+    char Key;
+    keytype ktype;
+    pWind->FlushKeyQueue();
+    while (1)
+    {
+        ktype
