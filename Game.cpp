@@ -1,4 +1,4 @@
-#include "Game.h"
+s#include "Game.h"
 #include "../Config/GameConfig.h"
 #include <windows.h>
 
@@ -150,7 +150,7 @@ void Game::drawFoodArea()
 	);
 }
 
-void Game::go()
+void Game::letsgo()
 {
 	int x, y;
 	bool isExit = false;
