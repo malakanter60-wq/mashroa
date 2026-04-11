@@ -11,16 +11,13 @@ Game::Game()
 
 	currentLevel = 1;
 	initLevel();
-	
-	budget = 1000;    // Initial money
-	isPaused = false; // Start in moving state
+	drawFoodArea();
 
 	clearStatusBar();
 }
 
 Game::~Game()
 {
-	// Cleanup pointers if necessary
 }
 
 clicktype Game::getMouseClick(int& x, int& y) const
@@ -68,6 +65,7 @@ void Game::createToolbar()
 	toolbarUpperleft.y = 0;
 
 	gameToolbar = new Toolbar(this, toolbarUpperleft, 0, config.toolBarHeight);
+	gameToolbar->draw();
 }
 
 void Game::createBudgetbar()
@@ -77,6 +75,7 @@ void Game::createBudgetbar()
 	budgetbarUpperleft.y = config.toolBarHeight;
 
 	gameBudgetbar = new Budgetbar(this, budgetbarUpperleft, 0, config.toolBarHeight);
+	gameBudgetbar->draw();
 }
 
 void Game::clearBudget() const
@@ -89,6 +88,7 @@ void Game::clearBudget() const
 void Game::printBudget(string msg) const
 {
 	clearBudget();
+
 	pWind->SetPen(config.penColor, 50);
 	pWind->SetFont(24, BOLD, BY_NAME, "Arial");
 	pWind->DrawString(config.windWidth - 200, config.toolBarHeight + 10, msg);
@@ -96,3 +96,100 @@ void Game::printBudget(string msg) const
 
 void Game::clearStatusBar() const
 {
+	pWind->SetPen(config.statusBarColor, 1);
+	pWind->SetBrush(config.statusBarColor);
+	pWind->DrawRectangle(0, config.windHeight - config.statusBarHeight, config.windWidth, config.windHeight);
+}
+
+void Game::printMessage(string msg) const
+{
+	clearStatusBar();
+	color textColor = LIGHTGRAY;
+	if (msg.find("Time Left") != string::npos && remainingTime <= 20)
+		textColor = RED;
+
+	pWind->SetPen(textColor, 50);
+	pWind->SetFont(28, BOLD, BY_NAME, "Arial");
+
+	pWind->DrawString(
+		10,
+		config.windHeight - (int)(0.85 * config.statusBarHeight),
+		msg
+	);
+}
+
+window* Game::getWind() const
+{
+	return pWind;
+}
+
+void Game::initLevel()
+{
+	if (currentLevel == 1)
+		remainingTime = 120;
+	else if (currentLevel == 2)
+		remainingTime = 90;
+	else
+		remainingTime = 60;
+}
+
+void Game::updateTimer()
+{
+	remainingTime--;
+
+	if (remainingTime <= 0)
+	{
+		printMessage("Time is up! You lost.");
+	}
+}
+
+void Game::drawFoodArea()
+{
+	window* pWind = getWind();
+
+	int yStart = 2 * config.toolBarHeight;
+
+	pWind->DrawImage(
+		"images\\grass.jpg",
+		0,
+		yStart,
+		config.windWidth,
+		config.windHeight - config.statusBarHeight
+	);
+}
+
+void Game::letsgo()
+{
+	int x, y;
+	bool isExit = false;
+
+	pWind->ChangeTitle("- - - - - - - - - - Farm Frenzy (CIE101-project) - - - - - - - - - -");
+
+	do
+	{
+		string budget_string = "BUDGET = $" + to_string(budget);
+		printBudget(budget_string);
+
+		string timeStr = "Time Left: " + to_string(remainingTime);
+		printMessage(timeStr);
+
+		Sleep(1000);
+		updateTimer();
+
+		if (remainingTime <= 0)
+			break;
+
+		if (pWind->GetMouseClick(x, y))
+		{
+			if (y >= 0 && y < config.toolBarHeight)
+			{
+				isExit = gameToolbar->handleClick(x, y);
+			}
+			else if (y >= config.toolBarHeight && y < 2 * config.toolBarHeight)
+			{
+				isExit = gameBudgetbar->handleClick(x, y);
+			}
+		}
+
+	} while (!isExit);
+}
