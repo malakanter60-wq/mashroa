@@ -1,12 +1,7 @@
 #pragma once
 #include "../CMUgraphicsLib/CMUgraphics.h"
-#include <string>
-
-// Forward declarations to avoid circular inclusion
-class Toolbar;
-class Budgetbar;
-
-using namespace std;
+#include "../UI/Toolbar.h"
+#include "../UI/BudgetBar.h"
 
 class Game
 {
@@ -15,38 +10,37 @@ private:
     Toolbar* gameToolbar;
     Budgetbar* gameBudgetbar;
 
-    int currentLevel;
     int remainingTime;
+    int currentLevel;
 
 public:
-    // --- UPDATED DATA MEMBERS ---
-    int budget = 1000;
-    bool isPaused = false; // AIM: Required to stop moveStep() when Pause is clicked
+    int budget = 30000;
 
     Game();
     ~Game();
 
-    // --- INPUT & WINDOW ---
     clicktype getMouseClick(int& x, int& y) const;
     string getSrting() const;
-    window* CreateWind(int w, int h, int x, int y) const;
-    window* getWind() const;
-    
-    // --- UPDATED GETTER ---
-    // AIM: Needed so the Icons can access Chick/Cow lists for Save, Load, and Restart
-    Budgetbar* getBudgetbar() const { return gameBudgetbar; }
 
-    // --- UI & DRAWING ---
+    window* CreateWind(int, int, int, int) const;
+
     void createToolbar();
     void createBudgetbar();
-    void clearStatusBar() const;
-    void printMessage(string msg) const;
+
     void clearBudget() const;
     void printBudget(string msg) const;
 
-    // --- GAME LOGIC ---
-    void initLevel();
+    void clearStatusBar() const;
+    void printMessage(string msg) const;
+
+    void letsgo();   
+    z
+    window* getWind() const;
+
+    // elTIMER welLEVEL
     void updateTimer();
+    void initLevel();
+
+    // elFOODAREA
     void drawFoodArea();
-    void letsgo(); // Contains the updated high-speed loop
 };
