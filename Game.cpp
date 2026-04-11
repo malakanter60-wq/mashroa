@@ -160,23 +160,8 @@ void Game::drawFoodArea()
 
 void Game::letsgo()
 {
-    getMouseClick(x, y);
 
-// check if click is inside play area (NOT toolbar or budgetbar)
-if (y >= 2 * config.toolBarHeight &&
-    y < config.windHeight - config.statusBarHeight)
-{
-    int startX = 0;
-    int startY = 2 * config.toolBarHeight;
 
-    int cellSize = 50; // تقدري تغيّريه حسب لعبتك
-
-    int randX = (rand() % (config.windWidth / cellSize)) * cellSize + startX;
-    int randY = (rand() % ((config.windHeight - config.statusBarHeight - startY) / cellSize)) * cellSize + startY;
-
-    Animal* a = new Animal(randX, randY, CHICK); // أو COW
-    AddObject(a);  // لو عندك list للأجسام
-}
     int x, y;
     bool isExit = false;
 
@@ -204,7 +189,23 @@ if (y >= 2 * config.toolBarHeight &&
         }
 
         getMouseClick(x, y);
+getMouseClick(x, y);
 
+// check if click is inside play area (NOT toolbar or budgetbar)
+if (y >= 2 * config.toolBarHeight &&
+    y < config.windHeight - config.statusBarHeight)
+{
+    int startX = 0;
+    int startY = 2 * config.toolBarHeight;
+
+    int cellSize = 50; // تقدري تغيّريه حسب لعبتك
+
+    int randX = (rand() % (config.windWidth / cellSize)) * cellSize + startX;
+    int randY = (rand() % ((config.windHeight - config.statusBarHeight - startY) / cellSize)) * cellSize + startY;
+
+    Animal* a = new Animal(randX, randY, CHICK); // أو COW
+    AddObject(a);  // لو عندك list للأجسام
+}
         if (y >= 0 && y < config.toolBarHeight)
         {
             isExit = gameToolbar->handleClick(x, y);
