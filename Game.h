@@ -1,7 +1,15 @@
+
+
+Copy code
 #pragma once
 #include "../CMUgraphicsLib/CMUgraphics.h"
 #include "../UI/Toolbar.h"
 #include "../UI/BudgetBar.h"
+
+// ADDED FOR 5 POINTS:
+#include <vector>
+#include <string>
+#include <fstream>
 
 class Game
 {
@@ -12,6 +20,10 @@ private:
 
     int remainingTime;
     int currentLevel;
+    
+    // ADDED FOR 5 POINTS:
+    std::vector<Animal> animals;
+    bool gamePaused;
 
 public:
     int budget = 30000;
@@ -34,7 +46,6 @@ public:
     void printMessage(string msg) const;
 
     void letsgo();   
-    z
     window* getWind() const;
 
     // elTIMER welLEVEL
@@ -44,4 +55,8 @@ public:
     // elFOODAREA
     void drawFoodArea();
     void drawProducts();
+    
+    // ADDED FOR 5 POINTS:
+    void SaveAnimals();
+    void LoadAnimals();
 };
