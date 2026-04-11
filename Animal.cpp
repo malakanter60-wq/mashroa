@@ -1,178 +1,76 @@
 #include "Animal.h"
-#include "../Config/GameConfig.h"
 #include "../Core/Game.h"
 #include <iostream>
-using namespace std;
 
-Animal::Animal(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Drawable(r_pGame, r_point, r_width, r_height)
+// Base Animal Constructor
+Animal::Animal(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) 
+    : Drawable(r_pGame, r_point, r_width, r_height)
 {
-	image_path = img_path;
-	curr_pos = r_point;
-	curr_vel.x = 1;
-	curr_vel.y = 1;
-
+    image_path = img_path;
+    curr_pos = r_point;
+    
+    // AIM: Make animals move randomly (Initialize with a small random velocity)
+    curr_vel.x = (rand() % 5) - 2; // Speed between -2 and 2
+    curr_vel.y = (rand() % 5) - 2;
 }
 
+// AIM: Draw chicken and cow
 void Animal::draw() const
 {
-	//draw image of this object
-	window* pWind = pGame->getWind();
-	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
+    window* pWind = pGame->getWind();
+    pWind->DrawImage(image_path, curr_pos.x, curr_pos.y, width, height);
 }
 
-Chick::Chick(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Animal(r_pGame, r_point, r_width, r_height, img_path)
-{}
-
-ProductType Chick::getProductType() const
-{
-    return EGG;
-}
-
-int Chick::getProductValue() const
-{
-    return 5;
-}
+// --- Chick Implementation ---
+Chick::Chick(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : Animal(r_pGame, r_point, r_width, r_height, img_path) {}
 
 void Chick::moveStep()
 {
-	//TO DO: add code for cleanup and game exit here
-	/*
-	//draw image of this object in the field
-	window* pWind = pGame->getWind();
-	pWind->DrawImage(image_path, RefPoint.x, RefPoint.y, width, height);
-	*/
-	
-    window* pWind = pGame->getWind();
+    // AIM: Make animals move randomly
+    // 1. Update position based on velocity
+    curr_pos.x += curr_vel.x;
+    curr_pos.y += curr_vel.y;
 
+    // 2. Occasionally change direction randomly (Jitter)
+    if (rand() % 50 == 0) {
+        curr_vel.x = (rand() % 3) - 1; 
+        curr_vel.y = (rand() % 3) - 1;
+    }
 
-    pWind->SetBrush(WHITE);
-    pWind->SetPen(WHITE);
-    pWind->DrawRectangle(RefPoint.x, RefPoint.y, RefPoint.x + width, RefPoint.y + height);
-
-    
-    RefPoint.x += (rand() % 11) - 5; 
-    RefPoint.y += (rand() % 11) - 5;
-
-    
-    if (RefPoint.x < range_min_x)
-        RefPoint.x = range_min_x;
-    if (RefPoint.x > range_max_x)
-        RefPoint.x = range_max_x;
-
-    if (RefPoint.y < range_min_y)
-        RefPoint.y = range_min_y;
-    if (RefPoint.y > range_max_y)
-        RefPoint.y = range_max_y;
-
-    draw();
-
-	
+    // 3. Screen Boundary Check (Keep them in the field)
+    if (curr_pos.x < 0 || curr_pos.x > config.windWidth - width) curr_vel.x *= -1;
+    if (curr_pos.y < config.toolBarHeight * 2 || curr_pos.y > config.windHeight - config.statusBarHeight - height) curr_vel.y *= -1;
 }
 
-Cow::Cow(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Animal(r_pGame, r_point, r_width, r_height, img_path)
-{}
+// --- Cow Implementation ---
+Cow::Cow(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : Animal(r_pGame, r_point, r_width, r_height, img_path) {}
 
-ProductType Cow::getProductType() const
+void Cow::moveStep()
 {
-    return MILK;
+    // AIM: Make animals move randomly
+    // Cows move slower than chicks generally
+    curr_pos.x += curr_vel.x * 0.5; 
+    curr_pos.y += curr_vel.y * 0.5;
+
+    if (rand() % 100 == 0) { // Changes direction less often than the chick
+        curr_vel.x = (rand() % 5) - 2;
+        curr_vel.y = (rand() % 5) - 2;
+    }
+
+    // Boundary Check
+    if (curr_pos.x < 0 || curr_pos.x > config.windWidth - width) curr_vel.x *= -1;
+    if (curr_pos.y < config.toolBarHeight * 2 || curr_pos.y > config.windHeight - config.statusBarHeight - height) curr_vel.y *= -1;
 }
 
-int Cow::getProductValue() const
-{
-    return 10;
-}
+// --- Product Implementations ---
+Egg::Egg(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : Drawable(r_pGame, r_point, r_width, r_height) {}
 
+void Egg::moveStep() { /* Eggs don't move */ }
 
-	//TO DO: add code for cleanup and game exit here
-	void Cow::moveStep()
-{
-    window* pWind = pGame->getWind();
+Milk::Milk(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : Drawable(r_pGame, r_point, r_width, r_height) {}
 
-    pWind->SetBrush(WHITE);
-    pWind->SetPen(WHITE);
-    pWind->DrawRectangle(RefPoint.x, RefPoint.y, RefPoint.x + width, RefPoint.y + height);
-
-    RefPoint.x += (rand() % 11) - 5;
-    RefPoint.y += (rand() % 11) - 5;
-
-    if (RefPoint.x < range_min_x)
-        RefPoint.x = range_min_x;
-    if (RefPoint.x > range_max_x)
-        RefPoint.x = range_max_x;
-
-    if (RefPoint.y < range_min_y)
-        RefPoint.y = range_min_y;
-    if (RefPoint.y > range_max_y)
-        RefPoint.y = range_max_y;
-
-    draw();
-}
-
-Egg::Egg(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Animal(r_pGame, r_point, r_width, r_height, img_path)
-{}
-
-int Egg::getProductValue() const
-{
-    return 10;
-}
-
-
-	//TO DO: add code for cleanup and game exit here
-	void Egg::moveStep()
-{
-    window* pWind = pGame->getWind();
-
-    pWind->SetBrush(WHITE);
-    pWind->SetPen(WHITE);
-    pWind->DrawRectangle(RefPoint.x, RefPoint.y, RefPoint.x + width, RefPoint.y + height);
-
-    RefPoint.x += (rand() % 11) - 5;
-    RefPoint.y += (rand() % 11) - 5;
-
-    if (RefPoint.x < range_min_x)
-        RefPoint.x = range_min_x;
-    if (RefPoint.x > range_max_x)
-        RefPoint.x = range_max_x;
-
-    if (RefPoint.y < range_min_y)
-        RefPoint.y = range_min_y;
-    if (RefPoint.y > range_max_y)
-        RefPoint.y = range_max_y;
-
-    draw();
-}
-
-Milk::Milk(Game* r_pGame, point r_point, int r_width, int r_height, string img_path) : Animal(r_pGame, r_point, r_width, r_height, img_path)
-{}
-
-
-int Milk::getProductValue() const
-{
-    return 10;
-}
-
-
-	//TO DO: add code for cleanup and game exit here
-	void Egg::moveStep()
-{
-    window* pWind = pGame->getWind();
-
-    pWind->SetBrush(WHITE);
-    pWind->SetPen(WHITE);
-    pWind->DrawRectangle(RefPoint.x, RefPoint.y, RefPoint.x + width, RefPoint.y + height);
-
-    RefPoint.x += (rand() % 11) - 5;
-    RefPoint.y += (rand() % 11) - 5;
-
-    if (RefPoint.x < range_min_x)
-        RefPoint.x = range_min_x;
-    if (RefPoint.x > range_max_x)
-        RefPoint.x = range_max_x;
-
-    if (RefPoint.y < range_min_y)
-        RefPoint.y = range_min_y;
-    if (RefPoint.y > range_max_y)
-        RefPoint.y = range_max_y;
-
-    draw();
-}
+void Milk::moveStep() { /* Milk doesn't move */ }
