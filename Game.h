@@ -19,7 +19,13 @@ private:
 
 public:
     int budget = 1000;
-    bool isPaused = false; // AIM: Required for Pause/Resume functionality
+    bool isPaused = false;// AIM: Required for Pause/Resume functionality
+    int remainingTime=120 ;
+	int goal =10 ;
+	int currentLevel ;
+	int animalscount =0 ;
+	int Animalsbuying=0 ;
+	int waterbuying=0 ;
 
     Game();
     ~Game();
