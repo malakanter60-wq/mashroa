@@ -11,13 +11,9 @@ private:
     Toolbar* gameToolbar;
     Budgetbar* gameBudgetbar;
 vector<Animal*> animals;
-
-    // Timer & Level
     int remainingTime;
     int currentLevel;
     int goal = 10;
-
-    // Game Stats
     int animalscount = 0;
     int Animalsbuying = 0;
     int waterbuying = 0;
@@ -46,10 +42,8 @@ void AddAnimal(Animal* a);
 
     window* getWind() const;
 
-    // elTimer & Level
     void updateTimer();
     void initLevel();
 
-    // elFood Area
     void drawFoodArea();
 };
