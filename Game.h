@@ -46,4 +46,8 @@ void AddAnimal(Animal* a);
     void initLevel();
 
     void drawFoodArea();
+    void drawProducts();
+	void drawField() const;
+	void drawWarehouse() const;
+	void drawProducts();
 };
