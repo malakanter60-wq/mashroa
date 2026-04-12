@@ -8,6 +8,9 @@ Game::Game()
 
     createToolbar();
     createBudgetbar();
+	drawField();
+	drawWarehouse();
+
 
     currentLevel = 1;
     initLevel();
@@ -157,6 +160,54 @@ void Game::drawFoodArea()
         config.windHeight - config.statusBarHeight
     );
 }
+void Game::drawField() const
+{
+	window* pWind = getWind();
+
+	int left = 0;
+	int right = config.windWidth;
+
+	int top = 2 * config.toolBarHeight;
+	int bottom = config.windHeight - config.statusBarHeight;
+
+	// الأرض
+	pWind->SetBrush(LIGHTGREEN);
+	pWind->SetPen(DARKGREEN, 2);
+	pWind->DrawRectangle(left, top, right, bottom);
+
+	// الحدود
+	pWind->SetPen(BLACK, 4);
+	pWind->DrawRectangle(left + 2, top + 2, right - 2, bottom - 2);
+}
+
+void Game::drawWarehouse() const
+{
+	window* pWind = getWind();
+
+	int top = 2 * config.toolBarHeight;
+
+	int x = config.windWidth - 150;   // يمين تحت
+	int y = config.windHeight - config.statusBarHeight - 150;
+
+	pWind->DrawImage("images\\warehouse.png", x, y, 120, 120);
+}
+
+
+void Game::drawProducts()
+{
+    window* pWind = getWind();
+
+    // Egg
+    pWind->SetBrush(WHITE);
+    pWind->SetPen(BLACK);
+    pWind->DrawCircle(300, 300, 10);
+
+    // Milk
+    pWind->SetBrush(LIGHTBLUE);
+    pWind->SetPen(BLACK);
+    pWind->DrawRectangle(400, 290, 430, 320);
+}
+
 
 void Game::letsgo()
 {
@@ -173,7 +224,7 @@ void Game::letsgo()
         printBudget(budget_string);
 
         printMessage();
-
+        drawProducts();
         Sleep(100);
         updateTimer();
 
