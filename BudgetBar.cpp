@@ -11,6 +11,10 @@ void randomizeAnimal(Animal* a) {
     a->curr_pos.x = range_min_x + (rand() % (range_max_x - range_min_x));
     a->curr_pos.y = range_min_y + (rand() % (range_max_y - range_min_y));
 }
+void Budgetbar::onClick()
+{
+    
+}//new
 
 // ... [Existing BudgetbarIcon and ChickIcon/CowIcon constructors] ...
 
@@ -73,7 +77,6 @@ Budgetbar::Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height) : 
         p.x += config.iconWidth;
     }
 }
-
 bool Budgetbar::handleClick(int x, int y)
 {
     // AIM: Put animal in random position on click
@@ -99,6 +102,8 @@ bool Budgetbar::handleClick(int x, int y)
     return false;
 }
 
+
+
 void Budgetbar::updateAnimals()
 {
     // AIM: Make animals move randomly (controlled by isPaused)
@@ -116,4 +121,58 @@ void Budgetbar::updateAnimals()
 BudgetbarIcon* Budgetbar::getIcon(int id) const
 {
     return iconsList[id];
+}
+ChickIcon::ChickIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+{
+    chickList = nullptr;
+    count = 0;
+}//nem
+void ChickIcon::onClick()
+{
+    point p;
+    p.x = range_min_x + rand() % (range_max_x - range_min_x);
+    p.y = range_min_y + rand() % (range_max_y - range_min_y);
+
+   
+}//new
+CowIcon::CowIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : BudgetbarIcon(r_pGame, r_point, r_width, r_height, img_path)
+{
+    cowList = nullptr;
+    count = 0;
+}//nem
+BudgetbarIcon::BudgetbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : Drawable(r_pGame, r_point, r_width, r_height)
+{
+    image_path = img_path;
+}//nem
+void Budgetbar::draw() const
+{
+    for (int i = 0; i < BB_ANIMAL_COUNT; i++)
+    {
+        if (iconsList[i])
+            iconsList[i]->draw();
+    }
+}//nem
+void CowIcon::onClick()
+{
+    point p;
+    p.x = range_min_x + rand() % (range_max_x - range_min_x);
+    p.y = range_min_y + rand() % (range_max_y - range_min_y);
+
+}//nem
+Budgetbar::~Budgetbar()
+{
+    if (iconsList)
+    {
+        for (int i = 0; i < BB_ANIMAL_COUNT; i++)
+            delete iconsList[i];
+
+        delete[] iconsList;
+    }
+}//new
+void BudgetbarIcon::draw() const
+{
+    return;
 }
