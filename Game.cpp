@@ -1,6 +1,7 @@
 #include "Game.h"
 #include "../Config/GameConfig.h"
 #include <windows.h>
+#include "../Entities/Animal.h"
 
 Game::Game()
 {
@@ -8,8 +9,8 @@ Game::Game()
 
     createToolbar();
     createBudgetbar();
-	drawField();
-	drawWarehouse();
+    drawField();
+    drawWarehouse();
 
 
     currentLevel = 1;
@@ -162,34 +163,34 @@ void Game::drawFoodArea()
 }
 void Game::drawField() const
 {
-	window* pWind = getWind();
+    window* pWind = getWind();
 
-	int left = 0;
-	int right = config.windWidth;
+    int left = 0;
+    int right = config.windWidth;
 
-	int top = 2 * config.toolBarHeight;
-	int bottom = config.windHeight - config.statusBarHeight;
+    int top = 2 * config.toolBarHeight;
+    int bottom = config.windHeight - config.statusBarHeight;
 
-	// الأرض
-	pWind->SetBrush(LIGHTGREEN);
-	pWind->SetPen(DARKGREEN, 2);
-	pWind->DrawRectangle(left, top, right, bottom);
+    // الأرض
+    pWind->SetBrush(LIGHTGREEN);
+    pWind->SetPen(DARKGREEN, 2);
+    pWind->DrawRectangle(left, top, right, bottom);
 
-	// الحدود
-	pWind->SetPen(BLACK, 4);
-	pWind->DrawRectangle(left + 2, top + 2, right - 2, bottom - 2);
+    // الحدود
+    pWind->SetPen(BLACK, 4);
+    pWind->DrawRectangle(left + 2, top + 2, right - 2, bottom - 2);
 }
 
 void Game::drawWarehouse() const
 {
-	window* pWind = getWind();
+    window* pWind = getWind();
 
-	int top = 2 * config.toolBarHeight;
+    int top = 2 * config.toolBarHeight;
 
-	int x = config.windWidth - 150;   // يمين تحت
-	int y = config.windHeight - config.statusBarHeight - 150;
+    int x = config.windWidth - 150;   // يمين تحت
+    int y = config.windHeight - config.statusBarHeight - 150;
 
-	pWind->DrawImage("images\\warehouse.png", x, y, 120, 120);
+    pWind->DrawImage("images\\warehouse.png", x, y, 120, 120);
 }
 
 
@@ -239,22 +240,26 @@ void Game::letsgo()
             break;
         }
 
-       
-getMouseClick(x, y);
 
-if (y >= 2 * config.toolBarHeight &&
-    y < config.windHeight - config.statusBarHeight)
-{
-    int startX = 0;
-    int startY = 2 * config.toolBarHeight;
+        getMouseClick(x, y);
 
-    int cellSize = 50; 
-    int randX = (rand() % (config.windWidth / cellSize)) * cellSize + startX;
-    int randY = (rand() % ((config.windHeight - config.statusBarHeight - startY) / cellSize)) * cellSize + startY;
+        if (y >= 2 * config.toolBarHeight &&
+            y < config.windHeight - config.statusBarHeight)
+        {
+            int startX = 0;
+            int startY = 2 * config.toolBarHeight;
 
-    Animal* a = new Animal(randX, randY, CHICK);
-    AddObject(a);  
-}
+            int cellSize = 50;
+            int randX = (rand() % (config.windWidth / cellSize)) * cellSize + startX;
+            int randY = (rand() % ((config.windHeight - config.statusBarHeight - startY) / cellSize)) * cellSize + startY;
+
+            /*point p;
+            p.x = randX;
+            p.y = randY;
+
+            Animal* a = new Chick(this, p);
+            AddAnimal(a);*/
+        }
         if (y >= 0 && y < config.toolBarHeight)
         {
             isExit = gameToolbar->handleClick(x, y);
