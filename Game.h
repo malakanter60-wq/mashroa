@@ -3,11 +3,7 @@
 #include "../Entities/Animal.h"
 #include <vector>
 #include "../UI/Budgetbar.h"
-
-Budgetbar* getBudgetbar();
-bool isPaused;
-int budget;
-
+#pragma once
 class Game
 {
 private:
@@ -27,6 +23,8 @@ public:
     void AddAnimal(Animal* a);
     Game();
    
+   
+    
     ~Game();
     bool isPaused;
 
