@@ -1,8 +1,10 @@
 #include "../CMUgraphicsLib/CMUgraphics.h"
 #include "../UI/Toolbar.h"
-#include "../UI/BudgetBar.h"
-#include "Animal.h"
+#include "../Entities/Animal.h"
 #include <vector>
+#include "../UI/Budgetbar.h"
+
+
 
 class Game
 {
@@ -10,7 +12,7 @@ private:
     window* pWind;
     Toolbar* gameToolbar;
     Budgetbar* gameBudgetbar;
-vector<Animal*> animals;
+    vector<Animal*> animals;
     int remainingTime;
     int currentLevel;
     int goal = 10;
@@ -20,7 +22,7 @@ vector<Animal*> animals;
 
 public:
     int budget = 30000;
-void AddAnimal(Animal* a);
+    void AddAnimal(Animal* a);
     Game();
     ~Game();
 
@@ -28,6 +30,7 @@ void AddAnimal(Animal* a);
     string getSrting() const;
 
     window* CreateWind(int, int, int, int) const;
+ 
 
     void createToolbar();
     void createBudgetbar();
@@ -39,15 +42,13 @@ void AddAnimal(Animal* a);
     void printMessage() const;
 
     void letsgo();
-
     window* getWind() const;
 
     void updateTimer();
     void initLevel();
 
     void drawFoodArea();
+    void drawField() const;
+    void drawWarehouse() const;
     void drawProducts();
-	void drawField() const;
-	void drawWarehouse() const;
-	void drawProducts();
 };
