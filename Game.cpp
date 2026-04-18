@@ -5,6 +5,7 @@
 
 Game::Game()
 {
+    isPaused = false;
     pWind = CreateWind(config.windWidth, config.windHeight, config.wx, config.wy);
 
     createToolbar();
@@ -187,7 +188,7 @@ void Game::drawWarehouse() const
 
     int top = 2 * config.toolBarHeight;
 
-    int x = config.windWidth - 150;   // يمين تحت
+    int x = config.windWidth - 150;   
     int y = config.windHeight - config.statusBarHeight - 150;
 
     pWind->DrawImage("images\\warehouse.png", x, y, 120, 120);
