@@ -20,4 +20,3 @@ public:
 	Drawable(Game* r_pGame, point r_point, int r_width, int r_height);
 	virtual void draw() const = 0;
 };
-
