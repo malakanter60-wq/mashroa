@@ -23,8 +23,10 @@ Game::Game()
 
 Game::~Game()
 {
+    delete pWind;
+    delete gameToolbar;
+    delete gameBudgetbar;
 }
-
 clicktype Game::getMouseClick(int& x, int& y) const
 {
     return pWind->WaitMouseClick(x, y);
@@ -229,6 +231,11 @@ void Game::letsgo()
         drawProducts();
         Sleep(100);
         updateTimer();
+        gameToolbar->draw();
+        gameBudgetbar->draw();
+        drawField();
+        drawWarehouse();
+       
 
         if (remainingTime <= 0)
         {
