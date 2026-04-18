@@ -4,7 +4,9 @@
 #include <vector>
 #include "../UI/Budgetbar.h"
 
-
+Budgetbar* getBudgetbar();
+bool isPaused;
+int budget;
 
 class Game
 {
@@ -24,7 +26,9 @@ public:
     int budget = 30000;
     void AddAnimal(Animal* a);
     Game();
+   
     ~Game();
+    bool isPaused;
 
     clicktype getMouseClick(int& x, int& y) const;
     string getSrting() const;
@@ -34,6 +38,7 @@ public:
 
     void createToolbar();
     void createBudgetbar();
+    Budgetbar* getBudgetbar() const { return gameBudgetbar; }
 
     void clearBudget() const;
     void printBudget(string msg) const;
@@ -43,7 +48,7 @@ public:
 
     void letsgo();
     window* getWind() const;
-
+  
     void updateTimer();
     void initLevel();
 
