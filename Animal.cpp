@@ -66,3 +66,28 @@ void Cow::moveStep()
     if (curr_pos.x < 0 || curr_pos.x > config.windWidth - width) curr_vel.x *= -1;
     if (curr_pos.y < config.toolBarHeight * 2 || curr_pos.y > config.windHeight - config.statusBarHeight - height) curr_vel.y *= -1;
 }
+
+// --- Product Implementations ---
+Egg::Egg(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : Drawable(r_pGame, r_point, r_width, r_height) {
+}
+
+/*void Egg::moveStep()
+{
+}*/
+
+Milk::Milk(Game* r_pGame, point r_point, int r_width, int r_height, string img_path)
+    : Drawable(r_pGame, r_point, r_width, r_height) {
+}
+
+/*void Milk::moveStep() { Milk doesn't move  }*/
+void Egg::draw() const
+{
+    window* pWind = pGame->getWind();
+    pWind->DrawImage("images\\egg.jpg", RefPoint.x, RefPoint.y, width, height);
+}
+void Milk::draw() const
+{
+    window* pWind = pGame->getWind();
+    pWind->DrawImage("images\\milk.jpg", RefPoint.x, RefPoint.y, width, height);
+}
