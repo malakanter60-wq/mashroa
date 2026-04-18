@@ -4,7 +4,7 @@
 
 enum ProductType
 {
-    NONE,
+    PT_NONE,
     EGG,
     MILK
 };
