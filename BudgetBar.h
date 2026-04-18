@@ -5,7 +5,6 @@
 #include <fstream> // Required for Save/Load
 #include <vector>  // Easier management of animals
 class Game;
-
 // Ranges for generating a random location
 const int range_min_x = 50;
 const int range_max_x = config.windWidth - 50;
@@ -20,6 +19,7 @@ public:
     BudgetbarIcon(Game* r_pGame, point r_point, int r_width, int r_height, string img_path);
     virtual void draw() const override;
     virtual void onClick() = 0;
+
 };
 
 // --- Animal Creation Icons ---
@@ -93,11 +93,12 @@ public:
     Budgetbar(Game* r_pGame, point r_point, int r_width, int r_height);
     ~Budgetbar();
     void draw() const override;
-
+    virtual void onClick();//new
     // Aim: Put animal in random position on click (handled here if clicking outside icons)
     bool handleClick(int x, int y);
 
     // Aim: Make animals move randomly (called every frame in game loop)
     void updateAnimals();
     BudgetbarIcon* getIcon(int id) const;//I add this new
+
 };
