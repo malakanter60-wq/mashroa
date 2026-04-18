@@ -1,5 +1,5 @@
 #include "Drawable.h"
-
+class Game;
 Drawable::Drawable(Game* r_pGame, point r_point, int r_width, int r_height)
 {
 	pGame = r_pGame;
